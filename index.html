@@ -31,9 +31,14 @@
 </head>
 <body>
 
-<audio id="bgMusic" loop>
-    <source src="muzik.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgMusic" src="muzik.mp3" loop></audio>
+
+<script>
+    document.addEventListener('click', () => {
+        const audio = document.getElementById('bgMusic');
+        audio.play().catch(error => console.log("Müzik çalınamadı:", error));
+    }, { once: true });
+</script>
 
 <header>
     <h1>Zeynebime...</h1>
