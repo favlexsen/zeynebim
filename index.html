@@ -13,7 +13,6 @@
         nav button:hover { background-color: #be185d; transform: translateY(-2px); }
         
         .container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
-        
         .section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
         .section.active { display: block; opacity: 1; }
         
@@ -32,13 +31,6 @@
 <body>
 
 <audio id="bgMusic" src="muzik.mp3" loop></audio>
-
-<script>
-    document.addEventListener('click', () => {
-        const audio = document.getElementById('bgMusic');
-        audio.play().catch(error => console.log("Müzik çalınamadı:", error));
-    }, { once: true });
-</script>
 
 <header>
     <h1>Zeynebime...</h1>
@@ -84,12 +76,10 @@
 </div>
 
 <script>
-    // Müzik Başlatma
+    // Müzik başlatma tetikleyicisi
     document.addEventListener('click', function() {
         const audio = document.getElementById('bgMusic');
-        if (audio.paused) {
-            audio.play();
-        }
+        audio.play().catch(e => console.log("Müzik için tıklama bekleniyor."));
     }, { once: true });
 
     function showSection(id) {
@@ -124,7 +114,6 @@
         slides[currentSlide].classList.add('active');
     }
 
-    // Başlangıçta kalpleri başlat
     startHearts();
 </script>
 </body>
