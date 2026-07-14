@@ -5,31 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeynebim</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; color: #4a4a4a; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; color: #4a4a4a; margin: 0; padding: 0; overflow-x: hidden; }
         header { background-color: #fbcfe8; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         h1 { margin: 0; color: #9d174d; font-size: 2.5em; }
         nav { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
         nav button { background-color: #ec4899; color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         nav button:hover { background-color: #be185d; transform: translateY(-2px); }
-        .container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.6s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        .book-viewer { 
-            position: relative; width: 100%; height: 70vh; background: #000; 
-            border-radius: 15px; margin-top: 20px; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
+        .container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+        
+        .section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .section.active { display: block; opacity: 1; }
+        
+        .book-viewer { position: relative; width: 100%; height: 70vh; background: #000; border-radius: 15px; margin-top: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .slide { position: absolute; width: 100%; height: 100%; transition: opacity 0.5s ease-in-out; opacity: 0; }
         .slide.active { opacity: 1; }
         .slide img { width: 100%; height: 100%; object-fit: contain; }
         
         h2 { color: #be185d; border-bottom: 2px solid #fbcfe8; padding-bottom: 10px; }
         .note-card, .thought-card { background: #fff1f2; padding: 20px; border-left: 5px solid #f43f5e; margin-bottom: 20px; border-radius: 8px; }
+
+        .heart { position: absolute; top: -10px; color: #f43f5e; font-size: 20px; animation: fall linear infinite; z-index: 1000; pointer-events: none; }
+        @keyframes fall { to { transform: translateY(100vh); } }
     </style>
 </head>
 <body>
+
+<audio id="bgMusic" loop>
+    <source src="muzik.mp3" type="audio/mpeg">
+</audio>
 
 <header>
     <h1>Zeynebime...</h1>
@@ -44,14 +48,13 @@
     <div id="notlar" class="section active">
         <h2>Notlar</h2>
         <div class="note-card">
-            <h3>Bu neslin en saygılı en karakterli ve en güzzzellll kızınaaaa<3<3 </h3>
-            <p>Koridorda ve bateriden gördüğüm günden bugüne... İyi ki varsın zeynebimmm<3<3<3<3<3 </p>
+            <h3>Bu neslin en saygılı en karakterli ve en güzzzellll kızınaaaa<3</h3>
+            <p>Koridorda ve bateriden gördüğüm günden bugüne... İyi ki varsın zeynebimmm<3</p>
         </div>
     </div>
 
     <div id="albumler" class="section">
         <h2>Albümler</h2>
-        <p style="font-size: 0.9em; color: #888;">Fotoğrafı değiştirmek için üzerine tıkla...</p>
         <div class="book-viewer" onclick="nextSlide()">
             <div class="slide active"><img src="alb/foto1.jpg" alt="Anı"></div>
             <div class="slide"><img src="alb/foto2.jpg" alt="Anı"></div>
@@ -70,16 +73,43 @@
     <div id="dusunceler" class="section">
         <h2>Senin Hakkında Düşündüklerim</h2>
         <div class="thought-card">
-            <p>Seninle hayatıma girdiğinden beri sıradan geçen günlerimin rengi değişti. Bazen bilgisayar başında rekabetin dibine vururken, bazen de odamda kendi başıma müzik çalarken bir anda aklıma geliyorsun ve kendimi gülümserken buluyorum. Okulda, koridorun o kalabalığı içinde gözlerim hep seni arıyor. Birlikte güldüğümüz, konuştuğumuz ve yan yana olduğumuz her an benim için paha biçilemez. İyi ki varsın.</p>
+            <p>Seninle hayatıma girdiğinden beri sıradan geçen günlerimin rengi değişti. Bazen bilgisayar başında rekabetin dibine vururken, bazen de odamda kendi başıma müzik çalarken bir anda aklıma geliyorsun ve kendimi gülümserken buluyorum. İyi ki varsın.</p>
         </div>
     </div>
 </div>
 
 <script>
+    // Müzik Başlatma
+    document.addEventListener('click', function() {
+        const audio = document.getElementById('bgMusic');
+        if (audio.paused) {
+            audio.play();
+        }
+    }, { once: true });
+
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        const target = document.getElementById(id);
+        target.classList.add('active');
+        
+        if(id !== 'albumler') startHearts();
+        else stopHearts();
     }
+
+    let heartInterval;
+    function startHearts() {
+        stopHearts();
+        heartInterval = setInterval(() => {
+            const heart = document.createElement('div');
+            heart.className = 'heart';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }, 300);
+    }
+    function stopHearts() { clearInterval(heartInterval); }
 
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
@@ -88,6 +118,9 @@
         currentSlide = (currentSlide + 1) % slides.length;
         slides[currentSlide].classList.add('active');
     }
+
+    // Başlangıçta kalpleri başlat
+    startHearts();
 </script>
 </body>
 </html>
