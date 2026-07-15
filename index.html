@@ -5,25 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zeynebim</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf2f8; color: #4a4a4a; margin: 0; padding: 0; overflow-x: hidden; }
-        header { background-color: #fbcfe8; padding: 20px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1 { margin: 0; color: #9d174d; font-size: 2.5em; }
-        #counter { color: #be185d; font-weight: bold; margin: 15px; font-size: 1.1em; }
-        nav { display: flex; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-        nav button { background-color: #ec4899; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        nav button:hover { background-color: #be185d; }
+        /* Gece Mavisi Tema */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: linear-gradient(135deg, #0f172a, #1e293b); 
+            color: #e2e8f0; 
+            margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; 
+        }
+        header { background: rgba(30, 41, 59, 0.8); padding: 25px; text-align: center; backdrop-filter: blur(10px); border-bottom: 1px solid #334155; }
+        h1 { margin: 0; color: #f472b6; font-size: 2.5em; text-shadow: 0 0 10px rgba(244, 114, 182, 0.5); }
+        #counter { color: #818cf8; font-weight: bold; margin: 15px; font-size: 1.2em; }
         
-        .container { max-width: 800px; margin: 40px auto; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
-        .section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
-        .section.active { display: block; opacity: 1; }
+        nav { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        nav button { background: #334155; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; border: 1px solid #475569; }
+        nav button:hover { background: #475569; transform: scale(1.05); }
         
-        .book-viewer { position: relative; width: 100%; height: 60vh; background: #000; border-radius: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .slide { position: absolute; width: 100%; height: 100%; transition: opacity 0.5s ease-in-out; opacity: 0; }
-        .slide.active { opacity: 1; }
-        .slide img { width: 100%; height: 100%; object-fit: contain; }
+        .container { max-width: 700px; margin: 30px auto; padding: 30px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .section { display: none; animation: fadeIn 0.8s; }
+        .section.active { display: block; }
         
-        .heart { position: absolute; top: -10px; color: #f43f5e; font-size: 20px; animation: fall linear infinite; z-index: 1000; pointer-events: none; }
-        @keyframes fall { to { transform: translateY(100vh); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Kalp Yağmuru */
+        .heart { position: fixed; color: #f472b6; font-size: 20px; z-index: 9999; pointer-events: none; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -36,8 +41,7 @@
     <nav>
         <button onclick="showSection('notlar')">Notlar</button>
         <button onclick="showSection('albumler')">Albümler</button>
-        <button onclick="showSection('dusunceler')">Düşüncelerim</button>
-        <button onclick="showSurprise()" style="background-color: #9d174d;">Bana Sürpriz Yap</button>
+        <button onclick="showSurprise()" style="background: #f472b6; color: #0f172a;">Bana Sürpriz Yap</button>
     </nav>
 </header>
 
@@ -46,58 +50,54 @@
         <h2>Notlar</h2>
         <p>Koridorda ve bateriden gördüğüm günden bugüne... İyi ki varsın zeynebimmm &#10084;</p>
     </div>
-
     <div id="albumler" class="section">
         <h2>Albümler</h2>
-        <div class="book-viewer" onclick="nextSlide()">
-            <!-- Görsellerin burada alb/foto1.jpg gibi dizili olmalı -->
-            <div class="slide active"><img src="alb/foto1.jpg" alt="Anı"></div>
-            <div class="slide"><img src="alb/foto2.jpg" alt="Anı"></div>
-        </div>
-    </div>
-
-    <div id="dusunceler" class="section">
-        <h2>Hakkında Düşündüklerim</h2>
-        <p>Seninle hayatıma girdiğinden beri sıradan geçen günlerimin rengi değişti. İyi ki varsın.</p>
+        <p>Fotoğraflar burada olacak...</p>
     </div>
 </div>
 
 <script>
     // 1. Sayaç
     const startDate = new Date('2025-11-06');
-    const now = new Date();
-    const diffDays = Math.ceil(Math.abs(now - startDate) / (1000 * 60 * 60 * 24));
+    const diffDays = Math.ceil(Math.abs(new Date() - startDate) / (1000 * 60 * 60 * 24));
     document.getElementById('counter').innerText = diffDays + " gündür hayatımdasın, iyi ki varsın!";
 
-    // 2. Müzik Başlatma
+    // 2. Müzik ve Kalp Başlatıcı
     window.addEventListener('click', () => {
-        const audio = document.getElementById('bgMusic');
-        audio.play().catch(() => {});
+        document.getElementById('bgMusic').play().catch(() => {});
+        startHearts();
     }, { once: true });
 
     // 3. Sürpriz Butonu
     function showSurprise() {
-        const messages = [
+        const msgs = [
             "Dünyadaki en güzel gülüşe sahipsin.",
             "Seninle geçirdiğim her saniye, en sevdiğim şarkıdan daha güzel.",
             "İyi ki karşıma çıkmışsın.",
-            "Şu an çok tatlı göründüğüne eminim."
+            "İyi ki eşşeğimsinnn.",
+            "Seni çok seviyorum baltanemmm<3.",
+            "MMUAAAAAAHHHHHHHHH EHEHEHEH<3<3"
         ];
-        alert(messages[Math.floor(Math.random() * messages.length)]);
+        alert(msgs[Math.floor(Math.random() * msgs.length)]);
     }
 
-    // 4. Navigasyon ve Efektler
+    // 4. Kalp Yağmuru Fonksiyonu
+    function startHearts() {
+        setInterval(() => {
+            const h = document.createElement('div');
+            h.innerHTML = '&#10084;';
+            h.className = 'heart';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.top = '-20px';
+            h.style.animationDuration = Math.random() * 3 + 2 + 's';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 5000);
+        }, 800);
+    }
+
     function showSection(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-    }
-
-    let currentSlide = 0;
-    function nextSlide() {
-        const slides = document.querySelectorAll('.slide');
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
     }
 </script>
 </body>
